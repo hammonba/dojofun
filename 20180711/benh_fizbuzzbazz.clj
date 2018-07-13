@@ -31,3 +31,29 @@
 (def fbb
   "here's one I made earlier ..."
   (fizz-buzz-baz 110))
+
+(defn build-segment
+  "build a segment that we can cycle"
+  [n buzz]
+  (conj (repeat (dec n) nil) buzz))
+
+(defn fizz-buzz-bazz-cycle-based
+  "Shamelessly inspired by the infinite sequence approach"
+  [n]
+  (apply map
+         (fn [n & bzs]
+           (or (not-empty (apply str bzs))
+               (str n)))
+         (cons
+          (range (inc n))
+          (map (comp cycle build-segment)
+               [3 5 7]
+               ["Fizz" "Buzz" "Bazz"]))))
+
+(def fbb-cycle
+  "here's another one I made slightly later"
+  (fizz-buzz-bazz-cycle-based 110))
+
+;; hope they got the same answer...
+;; (except for first element
+(println "equals?=> " (= (rest fbb) (rest fbb-cycle)))
