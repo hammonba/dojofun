@@ -9,8 +9,7 @@
     buzz value to the accumulator"
   [div buzz]
   (fn [[num & _ :as pair]]
-    (if (and (pos? num)
-             (zero? (mod num div)))
+    (if (zero? (mod num div))
       (update pair 1 conj buzz)
       pair)))
 
@@ -40,15 +39,13 @@
 (defn fizz-buzz-bazz-cycle-based
   "Shamelessly inspired by the infinite sequence approach"
   [n]
-  (apply map
-         (fn [n & bzs]
-           (or (not-empty (apply str bzs))
-               (str n)))
-         (cons
-          (range (inc n))
-          (map (comp cycle build-segment)
-               [3 5 7]
-               ["Fizz" "Buzz" "Bazz"]))))
+  (map #(or %1 (str %2))
+       (apply map
+              (comp not-empty str)
+              (map (comp cycle build-segment)
+                   [3 5 7]
+                   ["Fizz" "Buzz" "Bazz"]))
+       (range (inc n))))
 
 (def fbb-cycle
   "here's another one I made slightly later"
@@ -56,4 +53,4 @@
 
 ;; hope they got the same answer...
 ;; (except for first element
-(println "equals?=> " (= (rest fbb) (rest fbb-cycle)))
+(println "equals?=> " (= fbb fbb-cycle))
